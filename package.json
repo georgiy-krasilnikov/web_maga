@@ -1,0 +1,16 @@
+{
+  "name": "shop_project",
+  "version": "1.0.0",
+  "description": "Проект Магазина",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "node ./src/app.js"
+  },
+  "author": "Красильников Г., Фролова К., Воробьева М.",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  }
+}
