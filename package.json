@@ -9,7 +9,13 @@
   "author": "Красильников Г., Фролова К., Воробьева М.",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^2.2.2",
+    "ejs": "^4.0.1",
     "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.1",
+    "method-override": "^3.0.0",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
   }

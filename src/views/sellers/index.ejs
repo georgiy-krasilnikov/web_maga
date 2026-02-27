@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> - Управление магазином
+    </title>
+    <style>
+        .seller-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .seller-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .seller-email,
+        .seller-phone {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0.3rem 0;
+        }
+
+        .seller-email i,
+        .seller-phone i {
+            margin-right: 0.5rem;
+            color: #3498db;
+        }
+
+        .department-badge {
+            display: inline-block;
+            background: #e1f0fa;
+            color: #2980b9;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/">Главная</a>
+        <a href="/products">Товары</a>
+        <a href="/departments">Филиалы</a>
+        <a href="/sellers">Продавцы</a>
+        <a href="/store">Склад</a>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Управление поставщиками</h1>
+            <a href="/sellers/create" class="btn btn-success">Добавить продавца</a>
+        </div>
+
+        <!-- Поиск -->
+        <div class="card">
+            <input type="text" id="searchInput" class="search-box" placeholder="Поиск по названию">
+        </div>
+
+        <!-- Сетка продавцов -->
+        <div class="grid" id="sellersGrid">
+            <% if (sellers && sellers.length> 0) { %>
+                <% sellers.forEach(seller=> { %>
+                    <div class="seller-card" data-name="<%= seller.name.toLowerCase() %>"
+                        data-email="<%= seller.email.toLowerCase() %>" data-phone="<%= seller.phone %>">
+                        <h3>
+                            <%= seller.name %>
+                        </h3>
+
+                        <div class="seller-email">
+                            <%= seller.email %>
+                        </div>
+
+                        <div class="seller-phone">
+                            <%= seller.phone %>
+                        </div>
+
+                        <% if (seller.departments) { %>
+                            <span class="department-badge">
+                                <%= seller.departments.name %>
+                            </span>
+                            <% } else { %>
+                                <span class="department-badge" style="background: #f0f0f0; color: #666;">
+                                    Филиал не назначен
+                                </span>
+                                <% } %>
+
+                                    <div class="stats">
+                                        <div class="stat">
+                                            <div class="stat-value">
+                                                <%= seller.products ? seller.products.length : 0 %>
+                                            </div>
+                                            <div class="stat-label">Товаров</div>
+                                        </div>
+                                        <div class="stat">
+                                            <div class="stat-value">
+                                                <% let totalValue=0; if (seller.products) { seller.products.forEach(p=>
+                                                    totalValue += p.price);
+                                                    }
+                                                    %>
+                                                    <%= (totalValue / 1000).toFixed(1) %>k
+                                            </div>
+                                            <div class="stat-label">₽ стоимость</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="actions">
+                                        <a href="/sellers/<%= seller.id %>" class="btn">Просмотр</a>
+                                        <a href="/sellers/<%= seller.id %>/edit" class="btn">Редактировать</a>
+                                        <form action="/sellers/<%= seller.id %>?_method=DELETE" method="POST"
+                                            style="display: inline;">
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Вы уверены? Все товары продавца будут удалены')">
+                                                Удалить
+                                            </button>
+                                        </form>
+                                    </div>
+                    </div>
+                    <% }) %>
+                        <% } else { %>
+                            <div class="card" style="grid-column: 1/-1; text-align: center;">
+                                <p>Нет продавцов. <a href="/sellers/create">Добавьте первого продавца</a></p>
+                            </div>
+                            <% } %>
+        </div>
+    </div>
+
+    <script>
+        // Поиск продавцов
+        document.getElementById('searchInput').addEventListener('keyup', function () {
+            const searchText = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.seller-card');
+
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                // const email = card.dataset.email;
+                // const phone = card.dataset.phone;
+
+                if (name.includes(searchText)) { // || email.includes(searchText) || phone.includes(searchText)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

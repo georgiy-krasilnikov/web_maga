@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> - Управление магазином
+    </title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/">Главная</a>
+        <a href="/products">Товары</a>
+        <a href="/departments">Филиалы</a>
+        <a href="/sellers">Продавцы</a>
+        <a href="/store">Склад</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h1>Панель управления магазином</h1>
+            <p>Добро пожаловать в систему управления магазином</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="stat-number">
+                    <%= totalProducts %>
+                </div>
+                <div class="stat-label">Видов товара</div>
+                <a href="/products" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-number">
+                    <%= totalDepartments %>
+                </div>
+                <div class="stat-label">Филиалов сети</div>
+                <a href="/departments" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-number">
+                    <%= totalSellers %>
+                </div>
+                <div class="stat-label">Продавцов-поставщиков</div>
+                <a href="/sellers" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+            </div>
+
+            <div class="card">
+                <div class="stat-number">
+                    <%= totalStoreItems %>
+                </div>
+                <div class="stat-label">Товаров на складе</div>
+                <a href="/store" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

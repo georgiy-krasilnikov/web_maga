@@ -1,7 +1,7 @@
 // const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    const Product = sequelize.define('products', {
+    const Product = sequelize.define('Product', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -19,16 +19,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        cost_price: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         category: {
             type: DataTypes.TEXT,
             allowNull: false,
         },
         department_id: {
             type: DataTypes.INTEGER,
+            defaultValue: null,
             references: {
                 model: 'departments',
                 key: 'id'
@@ -36,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         seller_id: {
             type: DataTypes.INTEGER,
+            defaultValue: null,
             references: {
                 model: 'sellers',
                 key: 'id'
@@ -58,14 +56,10 @@ module.exports = (sequelize, DataTypes) => {
 
         Product.hasOne(models.Store, {
             foreignKey: 'product_id',
-            as: 'stores',
+            as: 'store',
             onDelete: 'CASCADE' // при удалении товара удаляется и запись на складе
         });
     };
-
-
-
-
 
     return Product;
 };

@@ -1,0 +1,73 @@
+<% layout('layout') -%>
+
+    <div class="card">
+        <h1>Добавление нового товара</h1>
+
+        <form action="/products" method="POST">
+            <div class="form-group">
+                <label for="name">Название товара *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Цена продажи (₽) *</label>
+                <input type="number" id="price" name="price" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cost_price">Себестоимость (₽) *</label>
+                <input type="number" id="cost_price" name="cost_price" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Категория *</label>
+                <input type="text" id="category" name="category" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department_id">Филиал</label>
+                <select id="department_id" name="department_id">
+                    <option value="">Выберите филиал</option>
+                    <% departments.forEach(dept=> { %>
+                        <option value="<%= dept.id %>">
+                            <%= dept.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="seller_id">Продавец</label>
+                <select id="seller_id" name="seller_id">
+                    <option value="">Выберите продавца</option>
+                    <% sellers.forEach(seller=> { %>
+                        <option value="<%= seller.id %>">
+                            <%= seller.name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+            <h3>Информация о складе</h3>
+
+            <div class="form-group">
+                <label for="store_count">Начальное количество на складе</label>
+                <input type="number" id="store_count" name="store_count" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="position">Позиция на складе</label>
+                <input type="text" id="position" name="position" placeholder="Например: Стеллаж А, полка 3">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <a href="/products" class="btn">Отмена</a>
+            </div>
+        </form>
+    </div>
