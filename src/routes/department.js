@@ -1,131 +1,179 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-// const { Department, Seller, Product } = require('../models');
-const db = require('../models')
+const db = require("../models");
 
 // GET /departments - список филиалов
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
     try {
-        const departments = await db.Department.findAll({
+        departments = await db.Department.findAll({
             include: [
-                { model: db.Seller, as: 'sellers' },
-                { model: db.Product, as: 'products' }
-            ]
+                { model: db.Seller, as: "sellers" },
+                { model: db.Product, as: "products" },
+            ],
         });
-        res.render('departments/index', {
-            title: 'Филиалы',
-            departments
+        res.render("departments/index", {
+            title: "Филиалы",
+            error: "",
+            departments,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/index", {
+            title: "Ошибка",
+            error: error.message,
+            departments: [],
+        });
     }
 });
 
 // POST /departments/create - для формы создания филиала
-router.get('/create', async (req, res) => {
+router.get("/create", async (req, res) => {
     try {
-        res.render('departments/create', {
-            title: 'Добавить филиал',
-            department: null
+        res.render("departments/create", {
+            title: "Создание филиала",
+            error: "",
+            department: null,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/create", {
+            title: "Ошибка",
+            error: error.message,
+        });
     }
 });
 
 // POST /departments - создание филиала
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         await db.Department.create(req.body);
-        res.redirect('/departments');
+        res.redirect("/departments");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/create", {
+            title: "Ошибка",
+            error: error.message,
+        });
     }
 });
 
 // GET /departments/:id - просмотр филиала
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const department = await db.Department.findByPk(req.params.id, {
             include: [
                 {
                     model: db.Seller,
-                    as: 'sellers',
-                    include: [{ model: db.Product, as: 'products' }]
+                    as: "sellers",
+                    include: [{ model: db.Product, as: "products" }],
                 },
                 {
                     model: db.Product,
-                    as: 'products',
-                    include: [{ model: db.Seller, as: 'sellers' }]
-                }
-            ]
+                    as: "products",
+                    include: [{ model: db.Seller, as: "sellers" }],
+                },
+            ],
         });
-
         if (!department) {
-            return res.status(404).send('Филиал не найден');
+            return res.status(404).render("departments/show", {
+                title: "Ошибка",
+                error: "Филиал не найден",
+                department,
+                totalProducts: "",
+                totalSellers: "",
+                totalValue: "",
+            });
         }
-
         const totalProducts = department.products.length;
         const totalSellers = department.sellers.length;
-        const totalValue = department.products.reduce((sum, p) => sum + (p.price * 1), 0);
-
-        res.render('departments/show', {
-            title: department.name,
+        const totalValue = department.products.reduce(
+            (sum, p) => sum + p.price * 1,
+            0,
+        );
+        res.render("departments/show", {
+            title: "Просмотр филиала " + department.name,
+            error: "",
             department,
             totalProducts,
             totalSellers,
-            totalValue
+            totalValue,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/show", {
+            title: "Ошибка",
+            error: error.message,
+            department: null,
+            totalProducts: "",
+            totalSellers: "",
+            totalValue: "",
+        });
     }
 });
 
 // GET /departments/:id/edit - форма редактирования
-router.get('/:id/edit', async (req, res) => {
+router.get("/:id/edit", async (req, res) => {
     try {
         const department = await db.Department.findByPk(req.params.id);
-
         if (!department) {
-            return res.status(404).send('Филиал не найден');
+            return res.status(404).render("departments/edit", {
+                title: "Ошибка",
+                error: "Филиал не найден",
+                department,
+            });
         }
-
-        res.render('departments/edit', {
-            title: 'Редактировать филиал',
-            department
+        res.render("departments/edit", {
+            title: "Редактирование филиала " + department.name,
+            error: "",
+            department,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/edit", {
+            title: "Ошибка",
+            error: error.message,
+            department: null,
+        });
     }
 });
 
 // PUT /departments/:id - обновление филиала
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         const department = await db.Department.findByPk(req.params.id);
         if (!department) {
-            return res.status(404).send('Филиал не найден');
+            return res.status(404).render("departments/edit", {
+                title: "Ошибка",
+                error: "Филиал не найден",
+                department,
+            });
         }
-
         await department.update(req.body);
-        res.redirect('/departments');
+        res.redirect("/departments");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/edit", {
+            title: "Ошибка",
+            error: error.message,
+            department: null,
+        });
     }
 });
 
 // DELETE /departments/:id - удаление филиала
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const department = await dbDepartment.findByPk(req.params.id);
         if (!department) {
-            return res.status(404).send('Филиал не найден');
+            return res.status(404).render("departments/edit", {
+                title: "Ошибка",
+                error: "Филиал не найден",
+                department,
+            });
         }
 
         await department.destroy();
-        res.redirect('/departments');
+        res.redirect("/departments");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("departments/edit", {
+            title: "Ошибка",
+            error: error.message,
+            department: null,
+        });
     }
 });
 

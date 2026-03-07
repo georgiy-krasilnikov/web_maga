@@ -1,62 +1,67 @@
 <!DOCTYPE html>
 <html lang="ru">
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> - Управление магазином
-    </title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %>
+        </title>
+    </head>
 
-<body>
-    <nav class="navbar">
-        <a href="/">Главная</a>
-        <a href="/products">Товары</a>
-        <a href="/departments">Филиалы</a>
-        <a href="/sellers">Продавцы</a>
-        <a href="/store">Склад</a>
-    </nav>
+    <body>
+        <nav class="navbar">
+            <a href="/">Главная</a>
+            <a href="/products">Товары</a>
+            <a href="/departments">Филиалы</a>
+            <a href="/sellers">Продавцы</a>
+            <a href="/store">Склад</a>
+        </nav>
 
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div>
-                <h1>
-                    <%= department.name %>
-                </h1>
-                <p>
-                    <%= department.description || 'Нет описания' %>
-                </p>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <a href="/departments/<%= department.id %>/edit" class="btn">Редактировать</a>
-                <form action="/departments/<%= department.id %>?_method=DELETE" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('Вы уверены?')">Удалить</button>
-                </form>
-            </div>
+        <% if (error) { %>
+        <div class="error">
+            <%= error %>
         </div>
-    </div>
+        <% } else { %>
 
-    <div class="grid">
         <div class="card">
-            <h3>Статистика</h3>
-            <p>Товаров: <strong>
-                    <%= totalProducts %>
-                </strong></p>
-            <p>Продавцов: <strong>
-                    <%= totalSellers %>
-                </strong></p>
-            <p>Общая стоимость товаров: <strong>
-                    <%= totalValue.toLocaleString() %> ₽
-                </strong></p>
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h1>
+                        <%= department.name %>
+                    </h1>
+                    <p>
+                        <%= department.description || 'Нет описания' %>
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="/departments/<%= department.id %>/edit" class="btn">Редактировать</a>
+                    <form action="/departments/<%= department.id %>?_method=DELETE" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены?')">Удалить</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card">
-        <h2>Продавцы филиала</h2>
-        <% if (department.sellers && department.sellers.length> 0) { %>
+        <div class="grid">
+            <div class="card">
+                <h3>Статистика</h3>
+                <p>Товаров: <strong>
+                        <%= totalProducts %>
+                    </strong></p>
+                <p>Продавцов: <strong>
+                        <%= totalSellers %>
+                    </strong></p>
+                <p>Общая стоимость товаров: <strong>
+                        <%= totalValue.toLocaleString() %> ₽
+                    </strong></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Продавцы филиала</h2>
+            <% if (department.sellers && department.sellers.length> 0) { %>
             <table>
                 <thead>
                     <tr>
@@ -69,36 +74,35 @@
                 </thead>
                 <tbody>
                     <% department.sellers.forEach(seller=> { %>
-                        <tr>
-                            <td>
-                                <%= seller.name %>
-                            </td>
-                            <td>
-                                <%= seller.email %>
-                            </td>
-                            <td>
-                                <%= seller.phone %>
-                            </td>
-                            <td>
-                                <%= seller.products?.length || 0 %>
-                            </td>
-                            <td>
-                                <a href="/sellers/<%= seller.id %>" class="btn">Просмотр</a>
-                            </td>
-                        </tr>
-                        <% }) %>
+                    <tr>
+                        <td>
+                            <%= seller.name %>
+                        </td>
+                        <td>
+                            <%= seller.email %>
+                        </td>
+                        <td>
+                            <%= seller.phone %>
+                        </td>
+                        <td>
+                            <%= seller.products?.length || 0 %>
+                        </td>
+                        <td>
+                            <a href="/sellers/<%= seller.id %>" class="btn">Просмотр</a>
+                        </td>
+                    </tr>
+                    <% }) %>
                 </tbody>
             </table>
             <% } else { %>
-                <p>В этом филиале пока нет продавцов</p>
-                <% } %>
-                    <a href="/sellers/create?department_id=<%= department.id %>" class="btn"
-                        style="margin-top: 1rem;">Добавить продавца</a>
-    </div>
+            <p>В этом филиале пока нет продавцов</p>
+            <% } %>
+            <a href="/sellers/create?department_id=<%= department.id %>" class="btn" style="margin-top: 1rem;">Добавить продавца</a>
+        </div>
 
-    <div class="card">
-        <h2>Товары филиала</h2>
-        <% if (department.products && department.products.length> 0) { %>
+        <div class="card">
+            <h2>Товары филиала</h2>
+            <% if (department.products && department.products.length> 0) { %>
             <table>
                 <thead>
                     <tr>
@@ -111,30 +115,35 @@
                 </thead>
                 <tbody>
                     <% department.products.forEach(product=> { %>
-                        <tr>
-                            <td>
-                                <%= product.name %>
-                            </td>
-                            <td>
-                                <%= product.category %>
-                            </td>
-                            <td>
-                                <%= product.price %> ₽
-                            </td>
-                            <td>
-                                <%= product.sellers?.name || 'Не назначен' %>
-                            </td>
-                            <td>
-                                <a href="/products/<%= product.id %>" class="btn">Просмотр</a>
-                            </td>
-                        </tr>
-                        <% }) %>
+                    <tr>
+                        <td>
+                            <%= product.name %>
+                        </td>
+                        <td>
+                            <%= product.category %>
+                        </td>
+                        <td>
+                            <%= product.price %> ₽
+                        </td>
+                        <td>
+                            <%= product.sellers?.name || 'Не назначен' %>
+                        </td>
+                        <td>
+                            <a href="/products/<%= product.id %>" class="btn">Просмотр</a>
+                        </td>
+                    </tr>
+                    <% }) %>
                 </tbody>
             </table>
             <% } else { %>
-                <p>В этом филиале пока нет товаров</p>
-                <% } %>
-                    <a href="/products/create?department_id=<%= department.id %>" class="btn"
-                        style="margin-top: 1rem;">Добавить товар</a>
-    </div>
-</body>
+            <p>В этом филиале пока нет товаров</p>
+            <p>Для добавления товара у филиала должны быть продавцы</p>
+            <% if (department.sellers && department.sellers.length> 0) { %>
+            <a href="/products/create?department_id=<%= department.id %>" class="btn" style="margin-top: 1rem;">Добавить товар</a>
+            <% } %>
+            <% } %>
+        </div>
+        <% } %>
+    </body>
+
+</html>

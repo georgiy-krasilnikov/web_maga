@@ -1,40 +1,58 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../models');
+const db = require("../models");
 
 // GET /store - склад
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const storeItems = await db.Store.findAll({
-            include: [{
-                model: db.Product,
-                as: 'products',
-                include: [
-                    { model: db.Department, as: 'departments' },
-                    { model: db.Seller, as: 'sellers' }
-                ]
-            }],
-            order: [['position', 'ASC']]
+            include: [
+                {
+                    model: db.Product,
+                    as: "products",
+                    include: [
+                        { model: db.Department, as: "departments" },
+                        { model: db.Seller, as: "sellers" },
+                    ],
+                },
+            ],
         });
 
         // Статистика склада
-        const totalItems = storeItems.reduce((sum, item) => sum + item.count, 0);
-        // const totalValue = storeItems.reduce((sum, item) => {
-        //     return sum + (item.count * (item.products?.price || 0));
-        // }, 0);
-        const lowStockItems = storeItems.filter(item => item.count < 10);
-        const emptyPositions = storeItems.filter(item => item.count === 0);
+        const totalItems = storeItems.reduce(
+            (sum, item) => sum + item.count,
+            0,
+        );
+        const totalValue = storeItems.reduce((sum, item) => {
+            return sum + item.count * (item.products?.price || 0);
+        }, 0);
+        const lowStockItems = storeItems.filter((item) => item.count < 10);
+        const emptyPositions = storeItems.filter((item) => item.count === 0);
 
-        res.render('store/index', {
-            title: 'Склад',
+        res.render("store/index", {
+            title: "Склад",
+            error: "",
             storeItems,
             totalItems,
-            // totalValue,
+            totalValue,
             lowStockItems: lowStockItems.length,
-            emptyPositions: emptyPositions.length
+            emptyPositions: emptyPositions.length,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        // res.redirect(
+        //     500,
+        //     redirect(`/error?message=${encodeURIComponent(error.message)}`),
+        // );
+        res.status(500).render("store/index", {
+            title: "Ошибка",
+            error: error.message,
+            storeItems: "",
+            totalItems: "",
+            totalValue: "",
+            lowStockItems: "",
+            emptyPositions: "",
+        });
+        // res.status(500).send(error.message);
     }
 });
 
@@ -53,10 +71,10 @@ router.get('/', async (req, res) => {
 // });
 
 // POST /store - создание записи о товаре на складе
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         await db.Store.create(req.body);
-        res.redirect('/store');
+        res.redirect("/store");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -129,19 +147,19 @@ router.post('/', async (req, res) => {
 // });
 
 // GET /store/:id/edit - редактирование позиции на складе
-router.get('/:id/edit', async (req, res) => {
+router.get("/:id/edit", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id, {
-            include: [{ model: db.Product, as: 'products' }]
+            include: [{ model: db.Product, as: "products" }],
         });
 
         if (!storeItem) {
-            return res.status(404).send('Позиция на складе не найдена');
+            return res.status(404).send("Позиция на складе не найдена");
         }
 
-        res.render('store/edit', {
-            title: 'Редактировать позицию на складе',
-            storeItem
+        res.render("store/edit", {
+            title: "Редактировать позицию на складе",
+            storeItem,
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -149,70 +167,76 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // PUT /store/:id - обновление позиции на складе
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id);
         if (!storeItem) {
-            return res.status(404).send('Позиция на складе не найдена');
+            return res.status(404).send("Позиция на складе не найдена");
         }
 
         await storeItem.update(req.body);
-        req.session.message = { type: 'success', text: 'Позиция обновлена' };
-        res.redirect('/store');
+        req.session.message = { type: "success", text: "Позиция обновлена" };
+        res.redirect("/store");
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
 
 // DELETE /store/:id - удаление позиции со склада
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id);
         if (!storeItem) {
-            return res.status(404).send('Позиция на складе не найдена');
+            return res.status(404).send("Позиция на складе не найдена");
         }
 
         await storeItem.destroy();
-        req.session.message = { type: 'success', text: 'Позиция удалена со склада' };
-        res.redirect('/store');
+        req.session.message = {
+            type: "success",
+            text: "Позиция удалена со склада",
+        };
+        res.redirect("/store");
     } catch (error) {
         res.status(500).send(error.message);
     }
 });
 
 // GET /store/report - отчет по складу
-router.get('/report', async (req, res) => {
+router.get("/report", async (req, res) => {
     try {
         const storeItems = await db.Store.findAll({
-            include: [{
-                model: db.Product,
-                as: 'products'
-            }],
-            order: [['count', 'DESC']]
+            include: [
+                {
+                    model: db.Product,
+                    as: "products",
+                },
+            ],
+            order: [["count", "DESC"]],
         });
 
         // Статистика по категориям
         const categoryStats = {};
-        storeItems.forEach(item => {
+        storeItems.forEach((item) => {
             if (item.products) {
                 const category = item.products.category;
                 if (!categoryStats[category]) {
                     categoryStats[category] = {
                         count: 0,
                         totalItems: 0,
-                        totalValue: 0
+                        totalValue: 0,
                     };
                 }
                 categoryStats[category].count++;
                 categoryStats[category].totalItems += item.count;
-                categoryStats[category].totalValue += item.count * item.products.price;
+                categoryStats[category].totalValue +=
+                    item.count * item.products.price;
             }
         });
 
-        res.render('store/report', {
-            title: 'Отчет по складу',
+        res.render("store/report", {
+            title: "Отчет по складу",
             storeItems,
-            categoryStats
+            categoryStats,
         });
     } catch (error) {
         res.status(500).send(error.message);

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %>
+        </title>
+        <style>
+            .form-group
+            {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label
+            {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea
+            {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 1rem;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus
+            {
+                outline: none;
+                border-color: #007bff;
+            }
+
+            .form-row
+            {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .form-row .form-group
+            {
+                flex: 1;
+            }
+
+            .btn
+            {
+                display: inline-block;
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 4px;
+                font-size: 1rem;
+                cursor: pointer;
+                text-decoration: none;
+                margin-right: 0.5rem;
+            }
+
+            .btn-success
+            {
+                background: #28a745;
+                color: white;
+            }
+
+            .btn-success:hover
+            {
+                background: #218838;
+            }
+
+            .btn
+            {
+                background: #6c757d;
+                color: white;
+            }
+
+            .btn:hover
+            {
+                background: #5a6268;
+            }
+
+            .alert
+            {
+                padding: 0.75rem;
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+                border-radius: 4px;
+                margin-bottom: 1rem;
+            }
+
+            .checkbox-group
+            {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 1rem 0;
+            }
+
+            .checkbox-group input
+            {
+                width: auto;
+            }
+
+            .store-fields
+            {
+                display: none;
+                padding: 1rem;
+                background: #f9f9f9;
+                border-radius: 4px;
+                margin-top: 0.5rem;
+            }
+
+            .store-fields.show
+            {
+                display: block;
+            }
+
+            .button-group
+            {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <a href="/">Главная</a>
+            <a href="/products">Товары</a>
+            <a href="/departments">Филиалы</a>
+            <a href="/sellers">Продавцы</a>
+            <a href="/store">Склад</a>
+        </nav>
+        <% if (error) { %>
+        <div class="error">
+            <%= error %>
+        </div>
+        <% } else { %>
+
+        <div class="container">
+            <div class="card">
+                <h1>
+                    <%= title %>
+                </h1>
+
+                <form action="/products" method="POST">
+                    <div class="form-group">
+                        <label for="name">Название товара <span class="required">*</label>
+                        <input type="text" id="name" name="name" value="<%= product?.name || '' %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Описание</label>
+                        <textarea id="description" name="description" rows="3"><%= product?.description || '' %></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Категория <span class="required">*</label>
+                            <input type="text" id="category" name="category" value="<%= product?.category || '' %>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Цена (₽) <span class="required">*</label>
+                            <input type="number" id="price" name="price" value="<%= product?.price || '' %>" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department_id">Филиал</label>
+                        <% if (selectedDepartmentId) { %>
+                        <select id="department_id" name="department_id">
+                            <% const selectedDept=departments.find(d=> d.id == selectedDepartmentId);
+                                if (selectedDept) {
+                                %>
+                            <option value="<%= selectedDept.id %>">
+                                <%= selectedDept.name %>
+                            </option>
+                            <% } %>
+                        </select>
+                        <% } else if (selectedSellerId) { %>
+                        <select id="department_id" name="department_id">
+                            <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
+                                    if (selectedSeller) {
+                                    %>
+                            <option value="<%= selectedSeller.department_id %>">
+                                <%= selectedSeller.department_id %>
+                            </option>
+                            <% } %>
+                        </select>
+                        <% } else { %>
+                        <select id="department_id" name="department_id">
+                            <option value=""> Выберите филиал </option>
+                            <% departments.forEach(dept=> { %>
+                            <option value="<%= dept.id %>">
+                                <%= dept.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                        <% } %>
+                    </div>
+
+                    <!-- <div class="form-row"> -->
+                    <div class="form-group">
+                        <label for="seller_id">Продавец <span class="required">*</label>
+                        <% if (selectedSellerId) { %>
+                        <select id="seller_id" name="seller_id">
+                            <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
+                                if (selectedSeller) {
+                                %>
+                            <option value="<%= selectedSeller.id %>">
+                                <%= selectedSeller.name %>
+                            </option>
+                            <% } %>
+                        </select>
+                        <% } else if (selectedDepartmentId) { %>
+                        <select id="seller_id" name="seller_id">
+                            <% const selectedDept=departments.find(d=> d.id ==
+                                    selectedDepartmentId);
+                                    if (selectedDept) {
+                                    %>
+                            <!-- <option value=""> Выберите продавца </option> -->
+                            <% selectedDept.sellers.forEach(seller=> { %>
+                            <option value="<%= seller.id %>">
+                                <%= seller.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                        <% } %>
+                        <% } else { %>
+                        <select id="seller_id" name="seller_id">
+                            <option value=""> Выберите продавца </option>
+                            <% sellers.forEach(seller=> { %>
+                            <option value="<%= seller.id %>">
+                                <%= seller.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                        <% } %>
+                    </div>
+                    <!-- </div> -->
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="addToStore" name="addToStore">
+                        <label for="addToStore">Добавить на склад</label>
+                    </div>
+
+                    <div class="store-fields" id="storeFields">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="store_count">Количество</label>
+                                <input type="number" id="store_count" name="store_count" value="0" min="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="position">Позиция на складе <span class="required">*</label>
+                                <input type="text" id="position" name="position" placeholder="Стеллаж А, полка 1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a href="/products" class="btn">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+
+        <script>
+            // Показывать/скрывать поля склада
+            const checkbox = document.getElementById('addToStore');
+            const storeFields = document.getElementById('storeFields');
+
+            checkbox.addEventListener('change', function()
+            {
+                if (this.checked)
+                {
+                    storeFields.classList.add('show');
+                }
+                else
+                {
+                    storeFields.classList.remove('show');
+                }
+            });
+        </script>
+    </body>
+
+</html>

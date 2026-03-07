@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS products (
   price INTEGER NOT NULL, 
   category TEXT NOT NULL,
   department_id INTEGER DEFAULT NULL,
-  seller_id INTEGER DEFAULT NULL,
-  FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL, -- если нет филиала, то товары остаются на складе и в каталоге 
-  FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE -- а если нет продавца, то удаляются и с склада и из каталога
+  seller_id INTEGER NOT NULL,
+  FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL, -- исключительно для промежуточной связи
+  FOREIGN KEY (seller_id) REFERENCES sellers(id) ON DELETE CASCADE -- а если нет продавца, то удаляются и с склада и из каталога, т.к. некому поставлять 
 );
 
 -- Склад (хранение товаров)

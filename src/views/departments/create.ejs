@@ -1,72 +1,86 @@
 <!DOCTYPE html>
 <html lang="ru">
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> - Управление магазином
-    </title>
-    <style>
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %>
+        </title>
+        <style>
+            .form-group
+            {
+                margin-bottom: 1.5rem;
+            }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #333;
-        }
+            .form-group label
+            {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: #333;
+            }
 
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
+            .form-group input,
+            .form-group textarea
+            {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 1rem;
+            }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #007bff;
-        }
+            .form-group input:focus,
+            .form-group textarea:focus
+            {
+                outline: none;
+                border-color: #007bff;
+            }
 
-        .form-group textarea {
-            resize: vertical;
-        }
-    </style>
-</head>
+            .form-group textarea
+            {
+                resize: vertical;
+            }
+        </style>
+    </head>
 
-<body>
-    <nav class="navbar">
-        <a href="/">Главная</a>
-        <a href="/products">Товары</a>
-        <a href="/departments">Филиалы</a>
-        <a href="/sellers">Продавцы</a>
-        <a href="/store">Склад</a>
-    </nav>
-    <div class="card">
-        <h1>Добавление нового филиала</h1>
+    <body>
+        <nav class="navbar">
+            <a href="/">Главная</a>
+            <a href="/products">Товары</a>
+            <a href="/departments">Филиалы</a>
+            <a href="/sellers">Продавцы</a>
+            <a href="/store">Склад</a>
+        </nav>
 
-        <form action="/departments" method="POST">
-            <div class="form-group">
-                <label for="name">Название филиала *</label>
-                <input type="text" id="name" name="name" value="<%= department?.name || '' %>" required>
-            </div>
+        <% if (error) { %>
+        <div class="error">
+            <%= error %>
+        </div>
+        <% } else { %>
 
-            <div class="form-group">
-                <label for="description">Описание</label>
-                <textarea id="description" name="description" rows="4"><%= department?.description || '' %></textarea>
-            </div>
+        <div class="card">
+            <h1>Добавление нового филиала</h1>
+            <form action="/departments" method="POST">
+                <div class="form-group">
+                    <label for="name">Название филиала <span class="required">*</label>
+                    <input type="text" id="name" name="name" value="<%= department?.name || '' %>" required>
+                </div>
 
-            <div style="display: flex; gap: 1rem;">
-                <button type="submit" class="btn btn-success">Сохранить</button>
-                <a href="/departments" class="btn">Отмена</a>
-            </div>
-        </form>
-    </div>
-</body>
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <textarea id="description" name="description" rows="4"><%= department?.description || '' %></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                    <a href="/departments" class="btn">Отмена</a>
+                </div>
+            </form>
+        </div>
+        <% } %>
+    </body>
+
+</html>

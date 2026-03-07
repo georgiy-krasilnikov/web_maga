@@ -1,7 +1,7 @@
 // const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    const Product = sequelize.define('Product', {
+    const Product = sequelize.define("Product", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: false,
         },
         description: {
             type: DataTypes.TEXT,
-            defaultValue: ''
+            defaultValue: "",
         },
         price: {
             type: DataTypes.INTEGER,
@@ -27,37 +27,37 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: null,
             references: {
-                model: 'departments',
-                key: 'id'
-            }
+                model: "departments",
+                key: "id",
+            },
         },
         seller_id: {
             type: DataTypes.INTEGER,
-            defaultValue: null,
+            allowNull: false,
             references: {
-                model: 'sellers',
-                key: 'id'
-            }
-        }
+                model: "sellers",
+                key: "id",
+            },
+        },
     });
 
     Product.associate = (models) => {
         Product.belongsTo(models.Department, {
-            foreignKey: 'department_id',
-            as: 'departments',
-            onDelete: 'SET NULL' // при удалении филиала товар остается
+            foreignKey: "department_id",
+            as: "departments",
+            onDelete: "SET NULL", // при удалении филиала товар остается
         });
 
         Product.belongsTo(models.Seller, {
-            foreignKey: 'seller_id',
-            as: 'sellers',
-            onDelete: 'CASCADE' // при удалении продавца товар удаляется
+            foreignKey: "seller_id",
+            as: "sellers",
+            onDelete: "CASCADE", // при удалении продавца товар удаляется
         });
 
         Product.hasOne(models.Store, {
-            foreignKey: 'product_id',
-            as: 'store',
-            onDelete: 'CASCADE' // при удалении товара удаляется и запись на складе
+            foreignKey: "product_id",
+            as: "store",
+            onDelete: "CASCADE", // при удалении товара удаляется и запись на складе
         });
     };
 

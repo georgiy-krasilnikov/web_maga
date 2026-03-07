@@ -1,125 +1,138 @@
 <!DOCTYPE html>
 <html lang="ru">
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %> - Управление магазином
-    </title>
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %>
+        </title>
+        <style>
+            .form-container
+            {
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                padding: 2rem;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            }
 
-        .form-group {
-            margin-bottom: 1.8rem;
-        }
+            .form-group
+            {
+                margin-bottom: 1.8rem;
+            }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #34495e;
-        }
+            .form-group label
+            {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: #34495e;
+            }
 
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
+            .form-group input,
+            .form-group select
+            {
+                width: 100%;
+                padding: 0.75rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1rem;
+            }
 
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
+            .form-group input:focus,
+            .form-group select:focus
+            {
+                outline: none;
+                border-color: #3498db;
+            }
 
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+            .button-group
+            {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
 
-        .current-info {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-    </style>
-</head>
+            .current-info
+            {
+                background: #e8f5e9;
+                color: #2e7d32;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+                font-size: 0.95rem;
+            }
+        </style>
+    </head>
 
-<body>
-    <nav class="navbar">
-        <a href="/">Главная</a>
-        <a href="/products">Товары</a>
-        <a href="/departments">Филиалы</a>
-        <a href="/sellers">Продавцы</a>
-        <a href="/store">Склад</a>
-    </nav>
+    <body>
+        <nav class="navbar">
+            <a href="/">Главная</a>
+            <a href="/products">Товары</a>
+            <a href="/departments">Филиалы</a>
+            <a href="/sellers">Продавцы</a>
+            <a href="/store">Склад</a>
+        </nav>
 
-    <div class="container">
-        <div class="form-container">
-            <h1>
-                <%= title %>
+        <% if (error) { %>
+        <div class="error">
+            <%= error %>
+        </div>
+        <% } else { %>
+
+        <div class="container">
+            <div class="form-container">
+                <h1>
+                    <%= title %>
                     <%= seller.name %>
-            </h1>
+                </h1>
 
-            <!-- <div class="current-info">
+                <!-- <div class="current-info">
                     <h1>Редактирование продавца <%= seller.name %>
                     </h1> -->
-            <!-- </div> -->
+                <!-- </div> -->
 
-            <form action="/sellers/<%= seller.id %>?_method=PUT" method="POST">
-                <div class="form-group">
-                    <label for="name">Имя продавца *</label>
-                    <input type="text" id="name" name="name" value="<%= seller.name %>" required>
-                </div>
+                <form action="/sellers/<%= seller.id %>?_method=PUT" method="POST">
+                    <div class="form-group">
+                        <label for="name">Имя продавца <span class="required">*</label>
+                        <input type="text" id="name" name="name" value="<%= seller.name %>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" value="<%= seller.email %>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</label>
+                        <input type="email" id="email" name="email" value="<%= seller.email %>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="phone">Телефон *</label>
-                    <input type="tel" id="phone" name="phone" value="<%= seller.phone %>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="phone">Телефон <span class="required">*</label>
+                        <input type="tel" id="phone" name="phone" value="<%= seller.phone %>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="department_id">Филиал</label>
-                    <select id="department_id" name="department_id">
-                        <option value="">Без филиала</option>
-                        <% if (departments && departments.length> 0) { %>
+                    <div class="form-group">
+                        <label for="department_id">Филиал <span class="required">*</label>
+                        <select id="department_id" name="department_id">
+                            <option value="">Без филиала</option>
+                            <% if (departments && departments.length> 0) { %>
                             <% departments.forEach(dept=> { %>
-                                <option value="<%= dept.id %>" <%=seller.department_id==dept.id ? 'selected' : '' %>
-                                    >
-                                    <%= dept.name %>
-                                </option>
-                                <% }) %>
-                                    <% } %>
-                    </select>
-                </div>
+                            <option value="<%= dept.id %>" <%=seller.department_id==dept.id ? 'selected' : '' %>>
+                                <%= dept.name %>
+                            </option>
+                            <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
 
-                <div class="button-group">
-                    <button type="submit" class="btn btn-success">Обновить</button>
-                    <a href="/sellers/<%= seller.id %>" class="btn">Отмена</a>
-                </div>
-            </form>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success">Обновить</button>
+                        <a href="/sellers/<%= seller.id %>" class="btn">Отмена</a>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-</body>
+        <% } %>
+    </body>
 
 </html>

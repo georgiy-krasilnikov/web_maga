@@ -1,135 +1,206 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../models');
+const db = require("../models");
+
+function test() {
+    throw new Error("test error");
+}
 
 // GET /sellers - список продавцов
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const sellers = await db.Seller.findAll({
             include: [
-                { model: db.Department, as: 'departments' },
-                { model: db.Product, as: 'products' }
+                { model: db.Department, as: "departments" },
+                { model: db.Product, as: "products" },
             ],
         });
-        console.log(sellers[2].departments)
-        res.render('sellers/index', {
-            title: 'Продавцы',
-            sellers
+        res.render("sellers/index", {
+            title: "Продавцы",
+            error: "",
+            sellers,
         });
     } catch (error) {
-        console.log(error.message)
-        res.json(error.message);
+        res.status(500).render("sellers/index", {
+            title: "Продавцы",
+            error: error.message,
+            sellers: [],
+        });
     }
 });
 
 // GET / sellers / create - форма создания продавца
-router.get('/create', async (req, res) => {
+router.get("/create", async (req, res) => {
     try {
         const departments = await db.Department.findAll();
-        res.render('sellers/create', {
-            title: 'Добавить продавца',
+        const selectedDepartmentId = req.query.department_id;
+        res.render("sellers/create", {
+            title: "Создание продавца",
+            error: "",
             departments,
-            seller: null
+            seller: null,
+            selectedDepartmentId: selectedDepartmentId,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/create", {
+            title: "Ошибка",
+            error: error.message,
+            departments: [],
+            seller: null,
+            selectedDepartmentId: "",
+        });
     }
 });
 
 // POST /sellers - создание продавца
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
     try {
+        if (req.body.department_id === "") {
+            req.body.department_id = null;
+        }
         await db.Seller.create(req.body);
-        res.redirect('/sellers');
+        res.redirect("/sellers");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/create", {
+            title: "Ошибка",
+            error: error.message,
+            departments: [],
+            seller: null,
+            selectedDepartmentId: "",
+        });
     }
 });
 
 // GET /sellers/:id - просмотр продавца
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const seller = await db.Seller.findByPk(req.params.id, {
             include: [
-                { model: db.Department, as: 'departments' },
+                { model: db.Department, as: "departments" },
                 {
                     model: db.Product,
-                    as: 'products',
-                    include: [{ model: db.Department, as: 'departments' }]
-                }
-            ]
+                    as: "products",
+                    include: [{ model: db.Department, as: "departments" }],
+                },
+            ],
         });
-
         if (!seller) {
-            return res.status(404).send('Продавец не найден');
+            return res.status(404).render("sellers/show", {
+                title: "Ошибка",
+                error: "Продавец не найден",
+                seller,
+                totalProducts: "",
+                totalValue: "",
+                avgPrice: "",
+            });
         }
 
         // Статистика по продавцу
         const totalProducts = seller.products.length;
-        const totalValue = seller.products.reduce((sum, p) => sum + (p.price * 1), 0);
-        const avgPrice = totaldb.Products > 0 ? Math.round(totalValue / totalProducts) : 0;
+        const totalValue = seller.products.reduce((sum, p) => sum + p.price, 0);
+        const avgPrice =
+            totalProducts > 0 ? Math.round(totalValue / totalProducts) : 0;
 
-        res.render('sellers/show', {
+        res.render("sellers/show", {
             title: seller.name,
+            error: "",
             seller,
             totalProducts,
             totalValue,
-            avgPrice
+            avgPrice,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/show", {
+            title: "Ошибка",
+            error: error.message,
+            seller: null,
+            totalProducts: "",
+            totalValue: "",
+            avgPrice: "",
+        });
     }
 });
 
 // GET /sellers/:id/edit - форма редактирования
-router.get('/:id/edit', async (req, res) => {
+router.get("/:id/edit", async (req, res) => {
     try {
-        const [seller, departments] = await db.Promise.all([
+        const [seller, departments] = await Promise.all([
             db.Seller.findByPk(req.params.id),
-            db.Department.findAll()
+            db.Department.findAll(),
         ]);
-
         if (!seller) {
-            return res.status(404).send('Продавец не найден');
+            return res.status(404).render("sellers/edit", {
+                title: "Ошибка",
+                error: "Продавец не найден",
+                seller,
+                departments: [],
+            });
         }
-
-        res.render('sellers/edit', {
-            title: 'Редактирование продавца',
+        res.render("sellers/edit", {
+            title: "Редактирование продавца " + seller.name,
+            error: "",
             seller,
-            departments
+            departments,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/edit", {
+            title: "Ошибка",
+            error: error.message,
+            seller: null,
+            departments: [],
+        });
     }
 });
 
 // PUT /sellers/:id - обновление продавца
-router.put('/:id', async (req, res) => {
-    console.log(req.body)
+router.put("/:id", async (req, res) => {
     try {
         const seller = await db.Seller.findByPk(req.params.id);
+
         if (!seller) {
-            return res.status(404).send('Продавец не найден');
+            return res.status(404).render("sellers/edit", {
+                title: "Ошибка",
+                error: "Продавец не найден",
+                seller,
+                departments: [],
+            });
+        }
+        if (req.body.department_id === "") {
+            req.body.department_id = null;
         }
         await seller.update(req.body);
-        res.redirect('/sellers');
+        res.redirect("/sellers");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/edit", {
+            title: "Ошибка",
+            error: error.message,
+            seller: null,
+            departments: [],
+        });
     }
 });
 
 // DELETE /sellers/:id - удаление продавца
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const seller = await db.Seller.findByPk(req.params.id);
         if (!seller) {
-            return res.status(404).send('Продавец не найден');
+            return res.status(404).render("sellers/edit", {
+                title: "Ошибка",
+                error: "Продавец не найден",
+                seller,
+                departments: [],
+            });
         }
-
         await seller.destroy();
-        res.redirect('/sellers');
+        res.redirect("/sellers");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("sellers/edit", {
+            title: "Ошибка",
+            error: error.message,
+            seller: null,
+            departments: [],
+        });
     }
 });
 
