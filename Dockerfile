@@ -15,6 +15,7 @@ RUN sqlite3 --version && echo "СУБД SQLite утановлена"
 RUN if [ -f init.sql ]; then \
         echo "Инициализация базы данных" && \
         sqlite3 /app/shop.db < init.sql && \
+        # sqlite3 /app/shop.db < backup.sql && \ для дампа
         echo "База данных инициализирована"; \
     else \
         echo "Файл init.sql не найден"; \
