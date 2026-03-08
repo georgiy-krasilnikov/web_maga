@@ -60,6 +60,7 @@ erDiagram
 ```
 
 ### Описание Makefile:
+- all: локальные сборка и запуск **(init-db, install, run)** 
 - init-db: инициализация БД `shop.db` *(если в корне уже есть БД, она удаляется и создается новая, осторожно!)*
 - install: установка NPM-зависимостей:
     - ejs
@@ -68,6 +69,9 @@ erDiagram
     - sequelize
     - sqlite3
 - run: запуск приложения `src/app.js`
+- docker-all: сборка и запуск в Docker'е **(docker-build, docker-run)**
+- docker-build: сборка образа
+- docker-run: запуск **(порт 3000)**
 
 **Планы:**
 - [x] Заняться БД
