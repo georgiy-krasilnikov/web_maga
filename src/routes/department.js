@@ -83,10 +83,9 @@ router.get("/:id", async (req, res) => {
         }
         const totalProducts = department.products.length;
         const totalSellers = department.sellers.length;
-        const totalValue = department.products.reduce(
-            (sum, p) => sum + p.price * 1,
-            0,
-        );
+        const totalValue = (
+            department.products.reduce((sum, p) => sum + p.price * 1, 0) / 1000
+        ).toFixed(2);
         res.render("departments/show", {
             title: department.name,
             error: "",

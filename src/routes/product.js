@@ -13,7 +13,11 @@ router.get("/", async (req, res) => {
                 { model: db.Store, as: "store" },
             ],
         });
-        res.render("products/index", { title: "Товары", error: "", products });
+        res.render("products/index", {
+            title: "Товары",
+            error: "",
+            products,
+        });
     } catch (error) {
         res.status(500).render("products/index", {
             title: "Ошибка",
@@ -73,11 +77,8 @@ router.post("/", async (req, res) => {
                 selectedSellerId: "",
             });
         }
-
         const product = await db.Product.create(req.body);
-
-        // Если указано количество на складе
-        if (req.body.store_count > 0) {
+        if (req.body.store_count !== "") {
             await db.Store.create({
                 product_id: product.id,
                 count: req.body.store_count,
@@ -108,7 +109,6 @@ router.get("/:id", async (req, res) => {
                 { model: db.Store, as: "store" },
             ],
         });
-
         if (!product) {
             return res.status(404).render("products/show", {
                 title: "Ошибка",
@@ -116,7 +116,6 @@ router.get("/:id", async (req, res) => {
                 product: null,
             });
         }
-
         res.render("products/show", {
             title: product.name,
             error: "",
@@ -181,7 +180,6 @@ router.put("/:id", async (req, res) => {
                 sellers: [],
             });
         }
-
         const seller = await db.Seller.findByPk(req.body.seller_id);
         if (seller) {
             req.body.department_id = seller.department_id;

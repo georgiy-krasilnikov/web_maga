@@ -33,17 +33,6 @@ app.use("/departments", departmentRouter);
 app.use("/sellers", sellerRouteer);
 app.use("/store", storeRouter);
 
-// API routes
-// app.use('/api/products', require('./api/product'));
-// app.use('/api/departments', require('./api/department'));
-// app.use('/api/sellers', require('./api/seller'));
-// app.use('/api/store', require('./api/store'));
-
-// app.use('/', (req, res) => {
-//     res.sendFile(path.join(dirname, 'index.html'));
-// });
-// app.use('/api', apiRouter);
-
 app.listen(port, () => {
     console.log(`Приложение запущено на http://localhost:${port}\n`);
 });

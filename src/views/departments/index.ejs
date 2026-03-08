@@ -25,12 +25,12 @@
         </div>
         <% } else { %>
 
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Управление филиалами</h1>
-            <a href="/departments/create" class="btn btn-success">Добавить филиал</a>
-        </div>
-
-        <div class="card">
+        <div class="container">
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                <h1>Управление филиалами</h1>
+                <a href="/departments/create" class="btn-action">Добавить филиал</a>
+            </div>
+            <% if (departments && departments.length > 0) { %>
             <table>
                 <thead>
                     <tr>
@@ -57,15 +57,20 @@
                             <%= department.products ? department.products.length : 0 %>
                         </td>
                         <td>
-                            <a href="/departments/<%= department.id %>" class="btn">Просмотр</a>
-                            <!-- <form action="/departments/<%= department.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены? Все связанные поставщики и их товары будут откреплены')">Удалить</button>
-                            </form> -->
+                            <a href=" /departments/<%= department.id %>" class="btn">Просмотр</a>
                         </td>
                     </tr>
                     <% }) %>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <a href="/departments/create" class="btn-action">Добавить филиал</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+            <% } else { %>
+            <h3>Филиалов пока нет</h3>
+            <% } %>
         </div>
         <% } %>
     </body>

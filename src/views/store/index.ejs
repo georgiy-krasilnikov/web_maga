@@ -6,272 +6,6 @@
         <link rel="stylesheet" href="/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><%= title %></title>
-        <style>
-            .stats-grid
-            {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1rem;
-                margin-bottom: 2rem;
-            }
-
-            .stat-card
-            {
-                background: white;
-                padding: 1.5rem;
-                border-radius: 12px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-            }
-
-            .stat-card h3
-            {
-                color: #7f8c8d;
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
-                text-transform: uppercase;
-            }
-
-            .stat-value
-            {
-                font-size: 2rem;
-                font-weight: bold;
-                color: #2c3e50;
-            }
-
-            .stat-value.warning
-            {
-                color: #f39c12;
-            }
-
-            .stat-value.danger
-            {
-                color: #e74c3c;
-            }
-
-            .stat-value.success
-            {
-                color: #27ae60;
-            }
-
-            .filters
-            {
-                background: white;
-                padding: 1rem;
-                border-radius: 8px;
-                margin-bottom: 1.5rem;
-                display: flex;
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
-
-            .search-box
-            {
-                flex: 1;
-                min-width: 200px;
-                padding: 0.75rem;
-                border: 2px solid #e0e0e0;
-                border-radius: 8px;
-                font-size: 1rem;
-            }
-
-            .search-box:focus
-            {
-                outline: none;
-                border-color: #3498db;
-            }
-
-            .filter-select
-            {
-                padding: 0.75rem;
-                border: 2px solid #e0e0e0;
-                border-radius: 8px;
-                font-size: 1rem;
-                min-width: 150px;
-            }
-
-            .table-container
-            {
-                background: white;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            table
-            {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            th
-            {
-                background: #f8f9fa;
-                padding: 1rem;
-                text-align: left;
-                font-weight: 600;
-                color: #2c3e50;
-                border-bottom: 2px solid #e0e0e0;
-            }
-
-            td
-            {
-                padding: 1rem;
-                border-bottom: 1px solid #ecf0f1;
-                vertical-align: middle;
-            }
-
-            tr:hover
-            {
-                background: #f8f9fa;
-            }
-
-            .product-info
-            {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .product-name
-            {
-                font-weight: 600;
-                color: #2c3e50;
-                text-decoration: none;
-            }
-
-            .product-name:hover
-            {
-                color: #3498db;
-            }
-
-            .product-category
-            {
-                font-size: 0.85rem;
-                color: #7f8c8d;
-            }
-
-            .stock-badge
-            {
-                display: inline-block;
-                padding: 0.25rem 0.75rem;
-                border-radius: 20px;
-                font-size: 0.85rem;
-                font-weight: 500;
-            }
-
-            .badge-normal
-            {
-                background: #d4edda;
-                color: #155724;
-            }
-
-            .badge-low
-            {
-                background: #fff3cd;
-                color: #856404;
-            }
-
-            .badge-empty
-            {
-                background: #f8d7da;
-                color: #721c24;
-            }
-
-            .position-tag
-            {
-                background: #e1f0fa;
-                color: #2980b9;
-                padding: 0.3rem 0.8rem;
-                border-radius: 20px;
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-
-            .action-buttons
-            {
-                display: flex;
-                gap: 0.5rem;
-            }
-
-            .btn-small
-            {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.9rem;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                text-decoration: none;
-                color: white;
-            }
-
-            .btn-info
-            {
-                background: #3498db;
-            }
-
-            .btn-edit
-            {
-                background: #f39c12;
-            }
-
-            .btn-delete
-            {
-                background: #e74c3c;
-            }
-
-            .pagination
-            {
-                display: flex;
-                justify-content: center;
-                gap: 0.5rem;
-                margin-top: 2rem;
-            }
-
-            .page-link
-            {
-                padding: 0.5rem 1rem;
-                border: 1px solid #e0e0e0;
-                border-radius: 4px;
-                text-decoration: none;
-                color: #2c3e50;
-            }
-
-            .page-link.active
-            {
-                background: #3498db;
-                color: white;
-                border-color: #3498db;
-            }
-
-            /* @media (max-width: 768px)
-            {
-                .stats-grid
-                {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-
-                .filters
-                {
-                    flex-direction: column;
-                }
-
-                .action-buttons
-                {
-                    flex-direction: column;
-                }
-
-                table
-                {
-                    font-size: 0.9rem;
-                }
-
-                th,
-                td
-                {
-                    padding: 0.75rem 0.5rem;
-                }
-            } */
-        </style>
     </head>
 
     <body>
@@ -290,162 +24,87 @@
         <% } else { %>
 
         <div class="container">
-            <!-- Заголовок -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
                 <h1>Управление складом</h1>
-                <a href="/store/create" class="btn btn-success">Приход/Расход</a>
+                <a href="/store/create" class="btn-action">Добавить товар</a>
             </div>
 
-            <!-- Статистика -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Всего позиций</h3>
-                    <div class="stat-value"><%= totalItems || 0 %></div>
+            <div class="grid" style="margin-bottom: 0px;">
+                <div class="card">
+                    <div class="stat-number">
+                        Всего позиций
+                    </div>
+                    <div class="stat-label"><%= totalItems || 0 %></div>
                 </div>
-                <div class="stat-card">
-                    <h3>Общая стоимость</h3>
-                    <div class="stat-value success"><%= (totalValue || 0).toLocaleString() %> ₽</div>
+                <div class="card">
+                    <div class="stat-number">Сумма (₽)</div>
+                    <div class="stat-label"><%= (totalValue || 0).toLocaleString() %> тыс.</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Низкий запас</h3>
-                    <div class="stat-value warning"><%= lowStockItems || 0 %></div>
-                </div>
-                <div class="stat-card">
-                    <h3>Пустые позиции</h3>
-                    <div class="stat-value danger"><%= emptyPositions || 0 %></div>
+                <div class="card">
+                    <div class="stat-number">Мало</div>
+                    <div class="stat-label"><%= lowStockItems || 0 %></div>
                 </div>
             </div>
 
-            <!-- Фильтры -->
-            <div class="filters">
-                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Поиск по названию товара...">
-                <select id="stockFilter" class="filter-select">
-                    <option value="all">Все товары</option>
-                    <option value="low">Низкий запас</option>
-                    <option value="empty">Нет в наличии</option>
-                    <option value="normal">В наличии</option>
-                </select>
-            </div>
-
-            <!-- Таблица товаров на складе -->
-            <div class="table-container">
-                <table id="storeTable">
-                    <thead>
-                        <tr>
-                            <th>Товар</th>
-                            <th>Категория</th>
-                            <th>Количество</th>
-                            <th>Цена</th>
-                            <th>Общая стоимость</th>
-                            <th>Позиция</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (storeItems && storeItems.length > 0) { %>
-                        <% storeItems.forEach(item => { 
+            <table id="storeTable">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Категория</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th>Общая стоимость</th>
+                        <th>Позиция</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (storeItems && storeItems.length > 0) { %>
+                    <% storeItems.forEach(item => { 
                             const totalPrice = (item.count || 0) * (item.products.price || 0);
                             let status = 'Достаточно';
                             let statusClass = 'badge-normal';
-                            
                             if (item.count === 0) {
-                                status = 'Нет в наличии';
+                                status = 'Отсутствует';
                                 statusClass = 'badge-empty';
                             } else if (item.count < 10) {
                                 status = 'Мало';
                                 statusClass = 'badge-low';
                             }
                         %>
-                        <tr class="store-row" data-name="<%= item.product?.name?.toLowerCase() || '' %>" data-category="<%= item.product?.category || '' %>" data-stock="<%= item.count %>">
-                            <td>
-                                <div class="product-info">
-                                    <a href="/products/<%= item.product?.id %>" class="product-name">
-                                        <%= item.products.name %>
-                                    </a>
-                                </div>
-                            </td>
-                            <td><%= item.products.category %></td>
-                            <td style="font-weight: bold;"><%= item.count || 0 %> шт.</td>
-                            <td><%= item.products.price.toLocaleString() || 0 %> ₽</td>
-                            <td><%= totalPrice.toLocaleString() %> ₽</td>
-                            <td>
-                                <span class="position-tag"><%= item.position %></span>
-                            </td>
-                            <td><span class="stock-badge <%= statusClass %>"><%= status %></span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a href="/store/<%= item.id %>" class="btn-small btn-info">Просмотр</a>
-                                    <!-- <form action="/store/<%= item.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('Удалить товар со склада?')"></button>
-                                    </form> -->
-                                </div>
-                            </td>
-                        </tr>
-                        <% }) %>
-                        <% } else { %>
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 3rem;">
-                                <p style="color: #7f8c8d; margin-bottom: 1rem;">На складе нет товаров</p>
-                                <a href="/store/create" class="btn btn-success">Добавить товар на склад</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <td>
+                            <%= item.products.name %>
+                        </td>
+                        <td><%= item.products.category %></td>
+                        <td><%= item.count || 0 %> шт.</td>
+                        <td><%= item.products.price.toLocaleString() || 0 %> ₽</td>
+                        <td><%= totalPrice.toLocaleString() %> ₽</td>
+                        <td>
+                            <% if (item.position) { %>
+                            <span class="position-tag"><%= item.position %></span>
+                            <% } %>
+                        </td>
+                        <td><span class="stock-badge <%= statusClass %>"><%= status %></span></td>
+                        <td>
+                            <a href="/store/<%= item.id %>" class="btn">Просмотр</a>
+
+                        </td>
+                    </tr>
+                    <% }) %>
+                    <% } else { %>
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 3rem;">
+                            <p style="color: #7f8c8d; margin-bottom: 1rem;">На складе нет товаров</p>
+                            <a href="/store/create" class="btn-action">Добавить товар</a>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
         </div>
         <% } %>
-
-        <script>
-            // Фильтрация таблицы
-            const searchInput = document.getElementById('searchInput');
-            const stockFilter = document.getElementById('stockFilter');
-            const categoryFilter = document.getElementById('categoryFilter');
-            const rows = document.querySelectorAll('.store-row');
-
-            function filterTable()
-            {
-                const searchText = searchInput.value.toLowerCase();
-                const stockValue = stockFilter.value;
-                const categoryValue = categoryFilter.value;
-
-                rows.forEach(row =>
-                {
-                    const name = row.dataset.name || '';
-                    const category = row.dataset.category || '';
-                    const stock = parseInt(row.dataset.stock) || 0;
-
-                    let show = true;
-
-                    // Поиск по названию
-                    if (searchText && !name.includes(searchText))
-                    {
-                        show = false;
-                    }
-
-                    // Фильтр по наличию
-                    if (show)
-                    {
-                        if (stockValue === 'low' && (stock >= 10 || stock === 0)) show = false;
-                        if (stockValue === 'empty' && stock !== 0) show = false;
-                        if (stockValue === 'normal' && (stock < 10 || stock === 0)) show = false;
-                    }
-
-                    // Фильтр по категории
-                    if (show && categoryValue !== 'all' && category !== categoryValue)
-                    {
-                        show = false;
-                    }
-
-                    row.style.display = show ? '' : 'none';
-                });
-            }
-
-            searchInput.addEventListener('keyup', filterTable);
-            stockFilter.addEventListener('change', filterTable);
-            categoryFilter.addEventListener('change', filterTable);
-        </script>
     </body>
 
 </html>

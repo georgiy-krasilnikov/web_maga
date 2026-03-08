@@ -28,40 +28,39 @@
         <div class="container">
             <div class="card">
                 <h1>Панель управления магазином</h1>
-                <p>Добро пожаловать в систему управления магазином</p>
             </div>
 
             <div class="grid">
                 <div class="card">
                     <div class="stat-number">
-                        <%= totalProducts %>
+                        Видов товара
                     </div>
-                    <div class="stat-label">Видов товара</div>
-                    <a href="/products" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+                    <div class="stat-label"><%= totalProducts %></div>
+                    <a href="/products" class="btn-action">Управление</a>
                 </div>
 
                 <div class="card">
                     <div class="stat-number">
-                        <%= totalDepartments %>
+                        Филиалов сети
                     </div>
-                    <div class="stat-label">Филиалов сети</div>
-                    <a href="/departments" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+                    <div class="stat-label"><%= totalDepartments %></div>
+                    <a href="/departments" class="btn-action">Управление</a>
                 </div>
 
                 <div class="card">
                     <div class="stat-number">
-                        <%= totalSellers %>
+                        Продавцов
                     </div>
-                    <div class="stat-label">Продавцов-поставщиков</div>
-                    <a href="/sellers" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+                    <div class="stat-label"><%= totalSellers %></div>
+                    <a href="/sellers" class="btn-action">Управление</a>
                 </div>
 
                 <div class="card">
                     <div class="stat-number">
-                        <%= totalStoreItems %>
+                        На складе
                     </div>
-                    <div class="stat-label">Товаров на складе</div>
-                    <a href="/store" style="margin-top: 1rem; display: inline-block;" class="btn">Управление</a>
+                    <div class="stat-label"><%= totalStoreItems %></div>
+                    <a href="/store" class="btn-action">Управление</a>
                 </div>
             </div>
         </div>

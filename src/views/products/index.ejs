@@ -25,11 +25,15 @@
         </div>
         <% } else { %>
 
-        <div class="card">
+        <div class="container">
+            <div class="card">
+                <h1>Управление каталогом товаров</h1>
+            </div>
+
+            <% if (products && products.length > 0) { %>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Название</th>
                         <th>Цена</th>
                         <th>Категория</th>
@@ -43,9 +47,6 @@
                     <% products.forEach(product=> { %>
                     <tr>
                         <td>
-                            <%= product.id %>
-                        </td>
-                        <td>
                             <%= product.name %>
                         </td>
                         <td>
@@ -55,7 +56,7 @@
                             <%= product.category %>
                         </td>
                         <td>
-                            <%= product.departments ? product.departments.name : 'Нет' %>
+                            <%= product.departments ? product.departments.name : 'Отсутствует' %>
                         </td>
                         <td>
                             <%= product.sellers.name %>
@@ -65,14 +66,16 @@
                         </td>
                         <td>
                             <a href="/products/<%= product.id %>" class="btn">Просмотр</a>
-                            <form action="/products/<%= product.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены?')">Удалить</button>
-                            </form>
                         </td>
                     </tr>
                     <% }) %>
                 </tbody>
             </table>
+            <% } else { %>
+            <div class="card">
+                <h3>Каталог товаров пока пуст</h3>
+            </div>
+            <% } %>
         </div>
         <% } %>
     </body>

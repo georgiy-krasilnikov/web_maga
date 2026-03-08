@@ -25,44 +25,50 @@
         </div>
         <% } else { %>
 
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div class="container">
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h1>
                         <%= department.name %>
                     </h1>
-                    <p>
+                    <p style="margin-top: 15px; color: #bfbfbf; font-weight: bold;">
                         <%= department.description || 'Нет описания' %>
                     </p>
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <a href="/departments/<%= department.id %>/edit" class="btn">Редактировать</a>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="/departments/<%= department.id %>/edit" class="btn-action">Редактировать</a>
                     <form action="/departments/<%= department.id %>?_method=DELETE" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены?')">Удалить</button>
+                        <button type="submit" class="btn" style="border: none;" onclick="return confirm('Вы уверены?')">Удалить</button>
                     </form>
                 </div>
             </div>
-        </div>
 
-        <div class="grid">
-            <div class="card">
-                <h3>Статистика</h3>
-                <p>Товаров: <strong>
-                        <%= totalProducts %>
-                    </strong></p>
-                <p>Продавцов: <strong>
-                        <%= totalSellers %>
-                    </strong></p>
-                <p>Общая стоимость товаров: <strong>
-                        <%= totalValue.toLocaleString() %> ₽
-                    </strong></p>
+            <div class="grid" style="margin-bottom: 0px;">
+                <div class="card">
+                    <div class="stat-number">
+                        Товаров
+                        <div class="stat-label"><%= totalProducts %></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="stat-number">
+                        Продавцов
+                        <div class="stat-label"><%= totalSellers %></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="stat-number">
+                        Сумма (₽)
+                        <div class="stat-label"><%= totalValue.toLocaleString() %> тыс.</div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="card">
-            <h2>Продавцы филиала</h2>
             <% if (department.sellers && department.sellers.length> 0) { %>
-            <table>
+            <div class="card">
+                <h3>Продавцы филиала</h3>
+            </div>
+            <table style="margin-bottom: 20px;">
                 <thead>
                     <tr>
                         <th>Имя</th>
@@ -92,17 +98,24 @@
                         </td>
                     </tr>
                     <% }) %>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <a href="/sellers/create?department_id=<%= department.id %>" class="btn-action">Добавить продавца</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <% } else { %>
-            <p>В этом филиале пока нет продавцов</p>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>У этого филиала пока нет продавцов</h3>
+                <a href="/sellers/create?department_id=<%= department.id %>" class="btn-action">Добавить продавца</a>
+            </div>
             <% } %>
-            <a href="/sellers/create?department_id=<%= department.id %>" class="btn" style="margin-top: 1rem;">Добавить продавца</a>
-        </div>
 
-        <div class="card">
-            <h2>Товары филиала</h2>
             <% if (department.products && department.products.length> 0) { %>
+            <div class="card">
+                <h3>Товары филиала</h3>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -133,14 +146,20 @@
                         </td>
                     </tr>
                     <% }) %>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <a href="/products/create?department_id=<%= department.id %>" class="btn-action">Добавить товар</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <% } else { %>
-            <p>В этом филиале пока нет товаров</p>
-            <p>Для добавления товара у филиала должны быть продавцы</p>
-            <% if (department.sellers && department.sellers.length> 0) { %>
-            <a href="/products/create?department_id=<%= department.id %>" class="btn" style="margin-top: 1rem;">Добавить товар</a>
-            <% } %>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>В этом филиале пока нет товаров</h3>
+                <% if (department.sellers && department.sellers.length> 0) { %>
+                <a href="/products/create?department_id=<%= department.id %>" class="btn-action">Добавить товар</a>
+                <% } %>
+            </div>
             <% } %>
         </div>
         <% } %>

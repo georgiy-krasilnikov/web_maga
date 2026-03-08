@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../models");
+const { where } = require("sequelize");
 
 // GET /store - склад
 router.get("/", async (req, res) => {
@@ -17,17 +18,16 @@ router.get("/", async (req, res) => {
                 },
             ],
         });
-
-        // Статистика склада
         const totalItems = storeItems.reduce(
             (sum, item) => sum + item.count,
             0,
         );
-        const totalValue = storeItems.reduce((sum, item) => {
-            return sum + item.count * (item.products?.price || 0);
-        }, 0);
+        const totalValue = (
+            storeItems.reduce((sum, item) => {
+                return sum + item.count * (item.products?.price || 0);
+            }, 0) / 1000
+        ).toFixed(2);
         const lowStockItems = storeItems.filter((item) => item.count < 10);
-        const emptyPositions = storeItems.filter((item) => item.count === 0);
 
         res.render("store/index", {
             title: "Склад",
@@ -36,7 +36,6 @@ router.get("/", async (req, res) => {
             totalItems,
             totalValue,
             lowStockItems: lowStockItems.length,
-            emptyPositions: emptyPositions.length,
         });
     } catch (error) {
         res.status(500).render("store/index", {
@@ -46,7 +45,6 @@ router.get("/", async (req, res) => {
             totalItems: "",
             totalValue: "",
             lowStockItems: "",
-            emptyPositions: "",
         });
     }
 });
@@ -54,7 +52,18 @@ router.get("/", async (req, res) => {
 // GET /store/ create - форма создания продавца
 router.get("/create", async (req, res) => {
     try {
-        const products = await db.Product.findAll();
+        const products = await db.Product.findAll({
+            include: [
+                {
+                    model: db.Store,
+                    as: "store",
+                    required: false,
+                },
+            ],
+            where: {
+                "$store.id$": null, // у которых нет записи в store
+            },
+        });
         res.render("store/create", {
             title: "Добавление товара на склад",
             error: "",

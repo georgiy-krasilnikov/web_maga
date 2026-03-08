@@ -8,129 +8,9 @@
         <title>
             <%= title %>
         </title>
-        <style>
-            .form-group
-            {
-                margin-bottom: 1.5rem;
-            }
+        <!-- <style>
 
-            .form-group label
-            {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-weight: 600;
-                color: #333;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea
-            {
-                width: 100%;
-                padding: 0.75rem;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 1rem;
-            }
-
-            .form-group input:focus,
-            .form-group select:focus,
-            .form-group textarea:focus
-            {
-                outline: none;
-                border-color: #007bff;
-            }
-
-            .form-row
-            {
-                display: flex;
-                gap: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .form-row .form-group
-            {
-                flex: 1;
-            }
-
-            .btn
-            {
-                display: inline-block;
-                padding: 0.75rem 1.5rem;
-                border: none;
-                border-radius: 4px;
-                font-size: 1rem;
-                cursor: pointer;
-                text-decoration: none;
-                margin-right: 0.5rem;
-            }
-
-            .btn-success
-            {
-                background: #28a745;
-                color: white;
-            }
-
-            .btn-success:hover
-            {
-                background: #218838;
-            }
-
-            .btn
-            {
-                background: #6c757d;
-                color: white;
-            }
-
-            .btn:hover
-            {
-                background: #5a6268;
-            }
-
-            .alert
-            {
-                padding: 0.75rem;
-                background: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-                border-radius: 4px;
-                margin-bottom: 1rem;
-            }
-
-            .checkbox-group
-            {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                margin: 1rem 0;
-            }
-
-            .checkbox-group input
-            {
-                width: auto;
-            }
-
-            .store-fields
-            {
-                display: none;
-                padding: 1rem;
-                background: #f9f9f9;
-                border-radius: 4px;
-                margin-top: 0.5rem;
-            }
-
-            .store-fields.show
-            {
-                display: block;
-            }
-
-            .button-group
-            {
-                display: flex;
-                gap: 1rem;
-                margin-top: 2rem;
-            }
-        </style>
+        </style> -->
     </head>
 
     <body>
@@ -150,151 +30,152 @@
         <div class="container">
             <div class="card">
                 <h1>
-                    <%= title %>
+                    Добавление нового товара
                 </h1>
+            </div>
 
-                <form action="/products" method="POST">
-                    <div class="form-group">
-                        <label for="name">Название товара <span class="required">*</label>
-                        <input type="text" id="name" name="name" value="<%= product?.name || '' %>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Описание</label>
-                        <textarea id="description" name="description" rows="3"><%= product?.description || '' %></textarea>
-                    </div>
-
+            <form action="/products" method="POST">
+                <div class="form-group">
+                    <label for="name">Название товара <span class="required">*</label>
+                    <input type="text" id="name" name="name" value="<%= product?.name || '' %>" required>
+                    <label for="description">Описание</label>
+                    <input type="text" id="description" name="description"><%= product?.description || '' %>
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="category">Категория <span class="required">*</label>
                             <input type="text" id="category" name="category" value="<%= product?.category || '' %>" required>
                         </div>
-
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="price">Цена (₽) <span class="required">*</label>
                             <input type="number" id="price" name="price" value="<%= product?.price || '' %>" min="0" required>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="department_id">Филиал</label>
-                        <% if (selectedDepartmentId) { %>
-                        <select id="department_id" name="department_id">
-                            <% const selectedDept=departments.find(d=> d.id == selectedDepartmentId);
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="department_id">Филиал</label>
+                            <% if (selectedDepartmentId) { %>
+                            <select id="department_id" name="department_id">
+                                <% const selectedDept=departments.find(d=> d.id == selectedDepartmentId);
                                 if (selectedDept) {
                                 %>
-                            <option value="<%= selectedDept.id %>">
-                                <%= selectedDept.name %>
-                            </option>
-                            <% } %>
-                        </select>
-                        <% } else if (selectedSellerId) { %>
-                        <select id="department_id" name="department_id">
-                            <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
+                                <option value="<%= selectedDept.id %>">
+                                    <%= selectedDept.name %>
+                                </option>
+                                <% } %>
+                            </select>
+                            <% } else if (selectedSellerId) { %>
+                            <select id="department_id" name="department_id">
+                                <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
                                     if (selectedSeller) {
                                     %>
-                            <option value="<%= selectedSeller.department_id %>">
-                                <%= selectedSeller.department_id %>
-                            </option>
+                                <% if (selectedSeller.department_id) { %>
+                                <option value="<%= selectedSeller.department_id %>">
+                                    <% const selectedDept=departments.find(d=> d.id == selectedSeller.department_id);
+                                if (selectedDept) {
+                                %>
+                                    <%= selectedDept.name %>
+                                    <% } %>
+                                </option>
+                                <% } else { %>
+                                <option value=""> Без филиала </option>
+                                <% } %>
+                                <% } %>
+                            </select>
+                            <% } else { %>
+                            <select id="department_id" name="department_id">
+                                <option value=""> Выберите филиал </option>
+                                <% departments.forEach(dept=> { %>
+                                <option value="<%= dept.id %>">
+                                    <%= dept.name %>
+                                </option>
+                                <% }) %>
+                            </select>
                             <% } %>
-                        </select>
-                        <% } else { %>
-                        <select id="department_id" name="department_id">
-                            <option value=""> Выберите филиал </option>
-                            <% departments.forEach(dept=> { %>
-                            <option value="<%= dept.id %>">
-                                <%= dept.name %>
-                            </option>
-                            <% }) %>
-                        </select>
-                        <% } %>
-                    </div>
-
-                    <!-- <div class="form-row"> -->
-                    <div class="form-group">
-                        <label for="seller_id">Продавец <span class="required">*</label>
-                        <% if (selectedSellerId) { %>
-                        <select id="seller_id" name="seller_id">
-                            <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
+                        </div>
+                        <div class="form-field">
+                            <label for="seller_id">Продавец <span class="required">*</label>
+                            <% if (selectedSellerId) { %>
+                            <select id="seller_id" name="seller_id">
+                                <% const selectedSeller=sellers.find(s=> s.id == selectedSellerId);
                                 if (selectedSeller) {
                                 %>
-                            <option value="<%= selectedSeller.id %>">
-                                <%= selectedSeller.name %>
-                            </option>
-                            <% } %>
-                        </select>
-                        <% } else if (selectedDepartmentId) { %>
-                        <select id="seller_id" name="seller_id">
-                            <% const selectedDept=departments.find(d=> d.id ==
+                                <option value="<%= selectedSeller.id %>">
+                                    <%= selectedSeller.name %>
+                                </option>
+                                <% } %>
+                            </select>
+                            <% } else if (selectedDepartmentId) { %>
+                            <select id="seller_id" name="seller_id">
+                                <% const selectedDept=departments.find(d=> d.id ==
                                     selectedDepartmentId);
                                     if (selectedDept) {
                                     %>
-                            <!-- <option value=""> Выберите продавца </option> -->
-                            <% selectedDept.sellers.forEach(seller=> { %>
-                            <option value="<%= seller.id %>">
-                                <%= seller.name %>
-                            </option>
-                            <% }) %>
-                        </select>
-                        <% } %>
-                        <% } else { %>
-                        <select id="seller_id" name="seller_id">
-                            <option value=""> Выберите продавца </option>
-                            <% sellers.forEach(seller=> { %>
-                            <option value="<%= seller.id %>">
-                                <%= seller.name %>
-                            </option>
-                            <% }) %>
-                        </select>
-                        <% } %>
+                                <option value=""> Выберите продавца </option>
+                                <% selectedDept.sellers.forEach(seller=> { %>
+                                <option value="<%= seller.id %>">
+                                    <%= seller.name %>
+                                </option>
+                                <% }) %>
+                            </select>
+                            <% } %>
+                            <% } else { %>
+                            <select id="seller_id" name="seller_id">
+                                <option value=""> Выберите продавца </option>
+                                <% sellers.forEach(seller=> { %>
+                                <option value="<%= seller.id %>">
+                                    <%= seller.name %>
+                                </option>
+                                <% }) %>
+                            </select>
+                            <% } %>
+                        </div>
                     </div>
-                    <!-- </div> -->
 
                     <div class="checkbox-group">
-                        <input type="checkbox" id="addToStore" name="addToStore">
-                        <label for="addToStore">Добавить на склад</label>
+                        <input type="checkbox" id="showStore" name="showStore" onclick="toggleStoreFields()">
+                        <label for="showStore" class="info-label" style="width: 100%;">Добавить товар на склад
+                        </label>
                     </div>
 
-                    <div class="store-fields" id="storeFields">
+                    <div id="storeFields" style="display: none; margin-top: 20px;">
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="form-field">
                                 <label for="store_count">Количество</label>
-                                <input type="number" id="store_count" name="store_count" value="0" min="0">
+                                <input type="number" id="store_count" name="store_count" value="" min="0">
                             </div>
-
-                            <div class="form-group">
-                                <label for="position">Позиция на складе <span class="required">*</label>
+                            <div class="form-field">
+                                <label for="position">Позиция на складе</label>
                                 <input type="text" id="position" name="position" placeholder="Стеллаж А, полка 1">
                             </div>
                         </div>
                     </div>
 
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-action" style="border: none;">Сохранить</button>
                         <a href="/products" class="btn">Отмена</a>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
         <% } %>
+    </body>
 
-        <script>
-            // Показывать/скрывать поля склада
-            const checkbox = document.getElementById('addToStore');
+    <script>
+        function toggleStoreFields()
+        {
+            const checkbox = document.getElementById('showStore');
             const storeFields = document.getElementById('storeFields');
 
-            checkbox.addEventListener('change', function()
+            if (checkbox.checked)
             {
-                if (this.checked)
-                {
-                    storeFields.classList.add('show');
-                }
-                else
-                {
-                    storeFields.classList.remove('show');
-                }
-            });
-        </script>
-    </body>
+                storeFields.style.display = 'block';
+            }
+            else
+            {
+                storeFields.style.display = 'none';
+            }
+        }
+    </script>
 
 </html>

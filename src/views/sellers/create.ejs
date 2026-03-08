@@ -8,92 +8,6 @@
         <title>
             <%= title %>
         </title>
-        <style>
-            .form-container
-            {
-                max-width: 600px;
-                margin: 0 auto;
-                background: white;
-                padding: 2rem;
-                border-radius: 12px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            }
-
-            .form-group
-            {
-                margin-bottom: 1.8rem;
-            }
-
-            .form-group label
-            {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-weight: 600;
-                color: #34495e;
-            }
-
-            .form-group label .required
-            {
-                color: #e74c3c;
-                margin-left: 0.2rem;
-            }
-
-            .form-group input,
-            .form-group select
-            {
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e0e0e0;
-                border-radius: 8px;
-                font-size: 1rem;
-                transition: all 0.3s;
-            }
-
-            .form-group input:focus,
-            .form-group select:focus
-            {
-                outline: none;
-                border-color: #3498db;
-                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            }
-
-            .form-group input.error,
-            .form-group select.error
-            {
-                border-color: #e74c3c;
-            }
-
-            .error-message
-            {
-                color: #e74c3c;
-                font-size: 0.85rem;
-                margin-top: 0.3rem;
-            }
-
-            .phone-mask
-            {
-                color: #7f8c8d;
-                font-size: 0.85rem;
-                margin-top: 0.3rem;
-            }
-
-            .button-group
-            {
-                display: flex;
-                gap: 1rem;
-                margin-top: 2rem;
-            }
-
-            .info-text
-            {
-                background: #e1f0fa;
-                color: #2980b9;
-                padding: 1rem;
-                border-radius: 8px;
-                margin-bottom: 1.5rem;
-                font-size: 0.95rem;
-            }
-        </style>
     </head>
 
     <body>
@@ -112,71 +26,52 @@
         <% } else { %>
 
         <div class="container">
-            <div class="form-container">
-                <h1>
-                    <%= title %>
-                </h1>
-
-
-                <div class="info-text">
-                    <strong>Информация:</strong> Телефон в формате +7.
-                </div>
-
-                <form action="/sellers" method="POST">
-                    <div class="form-group">
-                        <label for="name">
-                            Имя продавца <span class="required">*</span>
-                        </label>
-                        <input type="text" id="name" name="name" value="<%= seller?.name || '' %>" required placeholder="Введите полное имя">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">
-                            Email <span class="required">*</span>
-                        </label>
-                        <input type="email" id="email" name="email" value="<%= seller?.email || '' %>" required placeholder="example@mail.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">
-                            Телефон <span class="required">*</span>
-                        </label>
-                        <input type="tel" id="phone" name="phone" value="<%= seller?.phone || '' %>" required placeholder="+7 (999) 123-45-67">
-                        <div class="phone-mask">Формат: +7 (XXX) XXX-XX-XX</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="department_id">Филиал <span class="required">*</label>
-                        <% if (selectedDepartmentId) { %>
-                        <select id="department_id" name="department_id">
-                            <% const selectedDept=departments.find(d=> d.id == selectedDepartmentId);
+            <div class="card">
+                <h1>Добавление продавца</h1>
+            </div>
+            <form action="/sellers" method="POST">
+                <div class="form-group">
+                    <label for="name">
+                        Имя продавца <span class="required">*</span>
+                    </label>
+                    <input type="text" id="name" name="name" value="<%= seller?.name || '' %>" required placeholder="Иван Иванов">
+                    <label for="email">
+                        Email <span class="required">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" value="<%= seller?.email || '' %>" required placeholder="example@mail.com">
+                    <label for="phone">
+                        Телефон <span class="required">*</span>
+                    </label>
+                    <input type="tel" id="phone" name="phone" value="<%= seller?.phone || '' %>" required placeholder="+79991234567">
+                    <label for="department_id">Филиал</label>
+                    <% if (selectedDepartmentId) { %>
+                    <select id="department_id" name="department_id">
+                        <% const selectedDept=departments.find(d=> d.id == selectedDepartmentId);
                                 if (selectedDept) {
                                 %>
-                            <option value="<%= selectedDept.id %>">
-                                <%= selectedDept.name %>
-                            </option>
-                            <% } %>
-                        </select>
-                        <% } else { %>
-                        <select id="department_id" name="department_id">
-                            <option value=""> Выберите филиал </option>
-                            <% departments.forEach(dept=> { %>
-                            <option value="<%= dept.id %>">
-                                <%= dept.name %>
-                            </option>
-                            <% }) %>
-                        </select>
+                        <option value="<%= selectedDept.id %>">
+                            <%= selectedDept.name %>
+                        </option>
                         <% } %>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-success" id="submitBtn">
-                            <span class="btn-text">Сохранить</span>
+                    </select>
+                    <% } else { %>
+                    <select id="department_id" name="department_id">
+                        <option value=""> Выберите филиал </option>
+                        <% departments.forEach(dept=> { %>
+                        <option value="<%= dept.id %>">
+                            <%= dept.name %>
+                        </option>
+                        <% }) %>
+                    </select>
+                    <% } %>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn" style="border: none" id="submitBtn">
+                            <span class="btn-text">Создать</span>
                         </button>
                         <a href="/sellers" class="btn">Отмена</a>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
         <% } %>
 

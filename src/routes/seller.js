@@ -94,12 +94,8 @@ router.get("/:id", async (req, res) => {
                 avgPrice: "",
             });
         }
-
-        // Статистика по продавцу
         const totalProducts = seller.products.length;
         const totalValue = seller.products.reduce((sum, p) => sum + p.price, 0);
-        const avgPrice =
-            totalProducts > 0 ? Math.round(totalValue / totalProducts) : 0;
 
         res.render("sellers/show", {
             title: seller.name,
@@ -107,7 +103,6 @@ router.get("/:id", async (req, res) => {
             seller,
             totalProducts,
             totalValue,
-            avgPrice,
         });
     } catch (error) {
         res.status(500).render("sellers/show", {
@@ -116,7 +111,6 @@ router.get("/:id", async (req, res) => {
             seller: null,
             totalProducts: "",
             totalValue: "",
-            avgPrice: "",
         });
     }
 });
@@ -167,6 +161,23 @@ router.put("/:id", async (req, res) => {
         }
         if (req.body.department_id === "") {
             req.body.department_id = null;
+            await db.Product.update(
+                { department_id: null },
+                {
+                    where: {
+                        seller_id: seller.id,
+                    },
+                },
+            );
+        } else if (req.body.department_id !== "") {
+            await db.Product.update(
+                { department_id: req.body.department_id },
+                {
+                    where: {
+                        seller_id: seller.id,
+                    },
+                },
+            );
         }
         await seller.update(req.body);
         res.redirect("/sellers");
