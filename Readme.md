@@ -18,6 +18,8 @@
     └── views           => шаблоны EJS
 ```
 
+### Схема БД:
+
 ```mermaid
 erDiagram
     DEPARTMENTS ||--o{ SELLERS : ""
@@ -73,4 +75,4 @@ erDiagram
 - [x] Сделать API
 - [x] Добавить базовые шаблоны
 - [ ] Сделать единый стиль для всех шаблонов EJS
-- [ ] Добавить Dockerfile
+- [x] Добавить Dockerfile

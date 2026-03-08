@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><%= title %></title>
+        <style>
+            .store-header
+            {
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+                margin-bottom: 2rem;
+            }
+
+            .store-card
+            {
+                background: white;
+                border-radius: 12px;
+                padding: 2rem;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+            .product-title
+            {
+                font-size: 2rem;
+                color: #2c3e50;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-category
+            {
+                color: #7f8c8d;
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+
+            .info-grid
+            {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .info-section
+            {
+                background: #f8f9fa;
+                padding: 1.5rem;
+                border-radius: 8px;
+            }
+
+            .info-section h3
+            {
+                color: #2c3e50;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .info-row
+            {
+                display: flex;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid #ecf0f1;
+            }
+
+            .info-label
+            {
+                width: 120px;
+                color: #7f8c8d;
+            }
+
+            .info-value
+            {
+                flex: 1;
+                font-weight: 500;
+                color: #2c3e50;
+            }
+
+            .stock-value
+            {
+                font-size: 2rem;
+                font-weight: bold;
+            }
+
+            .stock-value.normal
+            {
+                color: #27ae60;
+            }
+
+            .stock-value.warning
+            {
+                color: #f39c12;
+            }
+
+            .stock-value.danger
+            {
+                color: #e74c3c;
+            }
+
+            .position-badge
+            {
+                display: inline-block;
+                background: #e1f0fa;
+                color: #2980b9;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+
+            .price-tag
+            {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: #27ae60;
+            }
+
+            .total-value
+            {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-top: 1rem;
+            }
+
+            .action-buttons
+            {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .btn
+            {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.3s;
+            }
+
+            .btn-primary
+            {
+                background: #3498db;
+                color: white;
+            }
+
+            .btn-warning
+            {
+                background: #f39c12;
+                color: white;
+            }
+
+            .btn-danger
+            {
+                background: #e74c3c;
+                color: white;
+            }
+
+            .btn-secondary
+            {
+                background: #95a5a6;
+                color: white;
+            }
+
+            .btn-success
+            {
+                background: #27ae60;
+                color: white;
+            }
+
+            .btn:hover
+            {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .history-table
+            {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+            }
+
+            .history-table th
+            {
+                background: #f8f9fa;
+                padding: 0.75rem;
+                text-align: left;
+            }
+
+            .history-table td
+            {
+                padding: 0.75rem;
+                border-bottom: 1px solid #ecf0f1;
+            }
+
+            .movement-in
+            {
+                color: #27ae60;
+                font-weight: 600;
+            }
+
+            .movement-out
+            {
+                color: #e74c3c;
+                font-weight: 600;
+            }
+
+            /* @media (max-width: 768px)
+            {
+                .info-grid
+                {
+                    grid-template-columns: 1fr;
+                }
+
+                .action-buttons
+                {
+                    flex-direction: column;
+                }
+
+                .btn
+                {
+                    width: 100%;
+                    justify-content: center;
+                }
+            } */
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <a href="/">Главная</a>
+            <a href="/products">Товары</a>
+            <a href="/departments">Филиалы</a>
+            <a href="/sellers">Продавцы</a>
+            <a href="/store">Склад</a>
+        </nav>
+
+        <% if (error) { %>
+        <div class="error">
+            <%= error %>
+        </div>
+        <% } else { %>
+
+        <div class="container">
+            <div class="store-header">
+                <h1>Позиция на складе</h1>
+                <div class="action-buttons">
+                    <a href="/store/<%= storeItem.id %>/edit" class="btn btn-warning">Редактировать</a>
+                    <form action="/store/<%= storeItem.id %>?_method=DELETE" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить товар со склада?')">Удалить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="store-card">
+                <div style="margin-bottom: 2rem;">
+                    <h2 class="product-title">
+                        <a href="/products/<%= storeItem.products.id %>"><%= storeItem.products.name %></a>
+                    </h2>
+                    <div class="product-category">Категория: <%= storeItem.products.category %></div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h3>Наличие на складе</h3>
+                        <div class="info-row">
+                            <span class="info-label">Количество:</span>
+                            <span class="info-value">
+                                <% 
+                                let stockClass = 'normal';
+                                if (storeItem.count === 0) stockClass = 'danger';
+                                else if (storeItem.count < 10) stockClass = 'warning';
+                            %>
+                                <span class="stock-value <%= stockClass %>"><%= storeItem.count %> шт.</span>
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Позиция:</span>
+                            <span class="info-value">
+                                <span class="position-badge"><%= storeItem.position %></span>
+
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Статус:</span>
+                            <span class="info-value">
+                                <% if (storeItem.count === 0) { %>
+                                <span style="color: #e74c3c;">Нет в наличии</span>
+                                <% } else if (storeItem.count < 10) { %>
+                                <span style="color: #f39c12;">Мало</span>
+                                <% } else { %>
+                                <span style="color: #27ae60;">В наличии</span>
+                                <% } %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Информация о товаре</h3>
+
+                        <div class="info-row">
+                            <span class="info-label">Стоимость:</span>
+                            <span class="info-value price-tag"><%= storeItem.products.price.toLocaleString() %> ₽</span>
+                        </div>
+
+                        <div class="total-value">
+                            Общая стоимость: <%= (storeItem.count * storeItem.products.price).toLocaleString() %> ₽
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="/store" class="btn btn-secondary">Назад к складу</a>
+            </div>
+        </div>
+        <% } %>
+    </body>
+
+</html>

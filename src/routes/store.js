@@ -39,10 +39,6 @@ router.get("/", async (req, res) => {
             emptyPositions: emptyPositions.length,
         });
     } catch (error) {
-        // res.redirect(
-        //     500,
-        //     redirect(`/error?message=${encodeURIComponent(error.message)}`),
-        // );
         res.status(500).render("store/index", {
             title: "Ошибка",
             error: error.message,
@@ -52,23 +48,28 @@ router.get("/", async (req, res) => {
             lowStockItems: "",
             emptyPositions: "",
         });
-        // res.status(500).send(error.message);
     }
 });
 
-// GET / sellers / create - форма создания продавца
-// router.get('/create', async (req, res) => {
-//     try {
-//         const departments = await db.Department.findAll();
-//         res.render('sellers/create', {
-//             title: 'Добавить продавца',
-//             departments,
-//             seller: null
-//         });
-//     } catch (error) {
-//         res.status(500).send(error.message);
-//     }
-// });
+// GET /store/ create - форма создания продавца
+router.get("/create", async (req, res) => {
+    try {
+        const products = await db.Product.findAll();
+        res.render("store/create", {
+            title: "Добавление товара на склад",
+            error: "",
+            products,
+            storeItem: null,
+        });
+    } catch (error) {
+        res.status(500).render("store/create", {
+            title: "Ошибка",
+            error: error.message,
+            products: [],
+            storeItem: null,
+        });
+    }
+});
 
 // POST /store - создание записи о товаре на складе
 router.post("/", async (req, res) => {
@@ -76,77 +77,43 @@ router.post("/", async (req, res) => {
         await db.Store.create(req.body);
         res.redirect("/store");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("store/create", {
+            title: "Ошибка",
+            error: error.message,
+            products: [],
+            storeItem: null,
+        });
     }
 });
 
-// GET /store/movements - движения товаров
-// router.get('/movements', async (req, res) => {
-//     try {
-//         // Здесь можно добавить модель для истории движений
-//         // Пока просто показываем форму
-//         const products = await Product.findAll({
-//             include: [{ model: db.Store, as: 'store' }],
-//             where: {
-//                 '$stores.id$': { [Op.ne]: null }
-//             }
-//         });
+// GET /store/:id - просмотр позиции на складе
+router.get("/:id", async (req, res) => {
+    try {
+        const storeItem = await db.Store.findByPk(req.params.id, {
+            include: [{ model: db.Product, as: "products" }],
+        });
+        if (!storeItem) {
+            return res.status(404).render("store/show", {
+                title: storeItem.products.name,
+                error: "Такая позиция не найдена на складе",
+                storeItem,
+            });
+        }
+        res.render("store/show", {
+            title: storeItem.products.name,
+            error: "",
+            storeItem,
+        });
+    } catch (error) {
+        res.status(500).render("store/show", {
+            title: "Ошибка",
+            error: error.message,
+            storeItem: null,
+        });
+    }
+});
 
-//         res.render('store/movements', {
-//             title: 'Движения товаров',
-//             products
-//         });
-//     } catch (error) {
-//         res.status(500).send(error.message);
-//     }
-// });
-
-// POST /store/movement - добавление движения
-// router.post('/movement', async (req, res) => {
-//     try {
-//         const { product_id, quantity, type, comment } = req.body;
-
-//         let storeItem = await db.Store.findOne({ where: { product_id } });
-
-//         if (!storeItem && type === 'in') {
-//             // Если товара нет на складе и это приход - создаем запись
-//             storeItem = await db.Store.create({
-//                 product_id,
-//                 count: parseInt(quantity),
-//                 position: req.body.position || 'Не указано'
-//             });
-//             req.session.message = { type: 'success', text: 'Товар добавлен на склад' };
-//         } else if (storeItem) {
-//             // Обновляем количество
-//             if (type === 'in') {
-//                 storeItem.count += parseInt(quantity);
-//                 req.session.message = { type: 'success', text: 'Приход товара оформлен' };
-//             } else if (type === 'out') {
-//                 if (storeItem.count < quantity) {
-//                     req.session.message = { type: 'error', text: 'Недостаточно товара на складе' };
-//                     return res.redirect('/store/movements');
-//                 }
-//                 storeItem.count -= parseInt(quantity);
-//                 req.session.message = { type: 'success', text: 'Расход товара оформлен' };
-//             }
-
-//             if (req.body.position) {
-//                 storeItem.position = req.body.position;
-//             }
-
-//             await storeItem.save();
-//         } else {
-//             req.session.message = { type: 'error', text: 'Товар не найден на складе' };
-//             return res.redirect('/store/movements');
-//         }
-
-//         res.redirect('/store');
-//     } catch (error) {
-//         res.status(500).send(error.message);
-//     }
-// });
-
-// GET /store/:id/edit - редактирование позиции на складе
+// GET /store/:id/edit - форма редактирования позиции на складе
 router.get("/:id/edit", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id, {
@@ -154,15 +121,24 @@ router.get("/:id/edit", async (req, res) => {
         });
 
         if (!storeItem) {
-            return res.status(404).send("Позиция на складе не найдена");
+            return res.status(404).render("store/edit", {
+                title: storeItem.products.name,
+                error: "Такая позиция не найдена на складе",
+                storeItem,
+            });
         }
 
         res.render("store/edit", {
-            title: "Редактировать позицию на складе",
+            title: storeItem.products.name,
+            error: "",
             storeItem,
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("store/edit", {
+            title: "Ошибка",
+            error: error.message,
+            storeItem: null,
+        });
     }
 });
 
@@ -171,14 +147,20 @@ router.put("/:id", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id);
         if (!storeItem) {
-            return res.status(404).send("Позиция на складе не найдена");
+            return res.status(404).render("store/edit", {
+                title: storeItem.products.name,
+                error: "Такая позиция не найдена на складе",
+                storeItem,
+            });
         }
-
         await storeItem.update(req.body);
-        req.session.message = { type: "success", text: "Позиция обновлена" };
         res.redirect("/store");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).render("store/edit", {
+            title: "Ошибка",
+            error: error.message,
+            storeItem: null,
+        });
     }
 });
 
@@ -187,59 +169,20 @@ router.delete("/:id", async (req, res) => {
     try {
         const storeItem = await db.Store.findByPk(req.params.id);
         if (!storeItem) {
-            return res.status(404).send("Позиция на складе не найдена");
+            return res.status(404).render("store/edit", {
+                title: storeItem.products.name,
+                error: "Такая позиция не найдена на складе",
+                storeItem,
+            });
         }
-
         await storeItem.destroy();
-        req.session.message = {
-            type: "success",
-            text: "Позиция удалена со склада",
-        };
         res.redirect("/store");
     } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
-
-// GET /store/report - отчет по складу
-router.get("/report", async (req, res) => {
-    try {
-        const storeItems = await db.Store.findAll({
-            include: [
-                {
-                    model: db.Product,
-                    as: "products",
-                },
-            ],
-            order: [["count", "DESC"]],
+        res.status(500).render("store/edit", {
+            title: "Ошибка",
+            error: error.message,
+            storeItem: null,
         });
-
-        // Статистика по категориям
-        const categoryStats = {};
-        storeItems.forEach((item) => {
-            if (item.products) {
-                const category = item.products.category;
-                if (!categoryStats[category]) {
-                    categoryStats[category] = {
-                        count: 0,
-                        totalItems: 0,
-                        totalValue: 0,
-                    };
-                }
-                categoryStats[category].count++;
-                categoryStats[category].totalItems += item.count;
-                categoryStats[category].totalValue +=
-                    item.count * item.products.price;
-            }
-        });
-
-        res.render("store/report", {
-            title: "Отчет по складу",
-            storeItems,
-            categoryStats,
-        });
-    } catch (error) {
-        res.status(500).send(error.message);
     }
 });
 

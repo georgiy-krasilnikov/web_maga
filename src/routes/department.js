@@ -88,7 +88,7 @@ router.get("/:id", async (req, res) => {
             0,
         );
         res.render("departments/show", {
-            title: "Просмотр филиала " + department.name,
+            title: department.name,
             error: "",
             department,
             totalProducts,
@@ -119,7 +119,7 @@ router.get("/:id/edit", async (req, res) => {
             });
         }
         res.render("departments/edit", {
-            title: "Редактирование филиала " + department.name,
+            title: department.name,
             error: "",
             department,
         });

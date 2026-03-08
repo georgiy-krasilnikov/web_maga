@@ -35,7 +35,7 @@ router.get("/create", async (req, res) => {
         const selectedDepartmentId = req.query.department_id;
         const selectedSellerId = req.query.seller_id;
         res.render("products/create", {
-            title: "Добавить товар",
+            title: "Добавление товара",
             error: "",
             product: null,
             departments,
@@ -151,7 +151,7 @@ router.get("/:id/edit", async (req, res) => {
             });
         }
         res.render("products/edit", {
-            title: "Редактировать товар",
+            title: product.name,
             error: "",
             product,
             departments,

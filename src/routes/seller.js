@@ -35,7 +35,7 @@ router.get("/create", async (req, res) => {
         const departments = await db.Department.findAll();
         const selectedDepartmentId = req.query.department_id;
         res.render("sellers/create", {
-            title: "Создание продавца",
+            title: "Добавление продавца",
             error: "",
             departments,
             seller: null,
@@ -137,7 +137,7 @@ router.get("/:id/edit", async (req, res) => {
             });
         }
         res.render("sellers/edit", {
-            title: "Редактирование продавца " + seller.name,
+            title: seller.name,
             error: "",
             seller,
             departments,
